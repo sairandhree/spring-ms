@@ -1,0 +1,45 @@
+version: '3.3'
+
+services:
+  product-ms:
+    image: sairandhree/productms
+ 
+   
+    networks:
+      - bootcamp-network
+    depends_on:
+      - eureka-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+
+  discount-ms:
+    image: sairandhree/discountms
+  
+   
+    networks:
+      - bootcamp-network
+    depends_on:
+      - eureka-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+
+  api-gateway:
+    image: sairandhree/myapigateway
+   
+    ports:
+      - "8011:8011"
+    networks:
+      - bootcamp-network
+    depends_on:
+      - eureka-server
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+
+  eureka-server:
+    image: sairandhree/eurekaserver
+     
+    networks:
+      - bootcamp-network
+
+networks:
+  bootcamp-network:
