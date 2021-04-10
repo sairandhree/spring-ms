@@ -5,8 +5,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.ServiceInstance;
-import org.springframework.cloud.client.discovery.DiscoveryClient;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +16,10 @@ import com.ms.boot.productms.model.DiscountRequest;
 import com.ms.boot.productms.model.DiscountResponse;
 import com.ms.boot.productms.model.Product;
 import com.ms.boot.productms.model.ProductDTO;
-import com.ms.boot.productms.proxies.DiscountServiceProxyInterface;
+
 import com.ms.boot.productms.repo.ProductRepository;
 
-import io.github.resilience4j.retry.annotation.Retry;
+
 
 @Service
 public class ProductService {
@@ -32,11 +31,7 @@ public class ProductService {
 	@Autowired
 	RestTemplate restTemplate;
 
-	@Autowired
-	DiscoveryClient discoveryClient;
 
-	@Autowired
-	DiscountServiceProxyInterface discountProxy;
 	
 	public List<Product> getAllProducts() {
 		return repo.findAll();
@@ -67,38 +62,7 @@ public class ProductService {
 
 	
 
-	public ProductDTO applyDiscountV2(Product p) {
-		// fetch address of discount ms from eureka
 
-		
-		DiscountRequest drequest = createDiscountRequest(p);
-
-		List<ServiceInstance> instances = discoveryClient.getInstances("discountms");
-
-		for (ServiceInstance instance : instances) {
-			System.out.println(instance.getHost() + ":" + instance.getPort());
-		}
-
-		ServiceInstance instance = instances.get(0);
-		
-		String url = "http://" + instance.getHost() + ":" + instance.getPort() + "/caldisc";
-
-		RestTemplate restTemplate = new RestTemplate();
-		HttpEntity<DiscountRequest> dre = new HttpEntity<DiscountRequest>(drequest);
-
-		ResponseEntity<DiscountResponse> dResponseEntity = restTemplate.exchange(url, HttpMethod.POST, dre,
-				DiscountResponse.class);
-		return ceateProductResponseDTO(dResponseEntity.getBody(), p);
-
-	}
-
-	
-	public ProductDTO applyDiscountV3(Product p) {
-		
-		DiscountRequest drequest = createDiscountRequest(p);
-		return ceateProductResponseDTO(discountProxy.calculateDiscount(drequest), p);
-
-	}
 
 	private DiscountRequest createDiscountRequest(Product p) {
 		return new DiscountRequest(p.getCategory(), p.getMrp());
