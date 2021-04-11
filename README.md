@@ -12,4 +12,15 @@ Create Eureka Server
 	eureka.client.register-with-eureka=false
 	eureka.client.fetch-registry=false
   
-  
+## make other projects clients to Eureka SErver
+1) Add "Eureka Discovery client" to Productms and discount ms
+2) uncomment Following properties
+
+	spring.application.name=
+	eureka.instance.instanceId= ${spring.application.name}:${random.int}
+	eureka.client.registerWithEureka= true
+	eureka.client.fetchRegistry = true
+	eureka.client.serviceUrl.defaultZone= http://localhost:8761/eureka
+
+
+3) @EnableDiscoveryClient on both project's application class
