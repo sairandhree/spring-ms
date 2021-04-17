@@ -37,8 +37,8 @@ Create Eureka Server
 
 3) Create DiscountMsProxyInterface 
 	`
-	@FeignClient(name = "DISCOUNTMS")
-	public interface DiscountServiceProxyInterface {
+		@FeignClient(name = "DISCOUNTMS")
+		public interface DiscountServiceProxyInterface {
 
 		@RequestMapping(value = "/caldisc", method = RequestMethod.POST) 
 		public DiscountResponse calculateDiscount(DiscountRequest request);
@@ -50,14 +50,16 @@ Create Eureka Server
 	}
 	`
 4) Call FeignProxy from ProductService
-	`
-	@Autowired
-	DiscountServiceProxyInterface discountProxy;
-
-	public ProductDTO applyDiscountV3(Product p) {
-		DiscountRequest drequest = createDiscountRequest(p);
 	
-		return ceateProductResponseDTO(discountProxy.calculateDiscount(drequest), p);
-	}
+	`
+	
+		@Autowired
+		DiscountServiceProxyInterface discountProxy;
+
+		public ProductDTO applyDiscountV3(Product p) {
+			DiscountRequest drequest = createDiscountRequest(p);
+
+			return ceateProductResponseDTO(discountProxy.calculateDiscount(drequest), p);
+		}
 	`
 	
