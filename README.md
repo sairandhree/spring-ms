@@ -62,4 +62,40 @@ Create Eureka Server
 			return ceateProductResponseDTO(discountProxy.calculateDiscount(drequest), p);
 		}
 	`
+
+## CircuitBreaker with Resilience4j
+1) In productms add dependancy for Resilience4j
+2) annotate contoller methods like below.
+	`
+	//@Retry(name = "discountretry" , fallbackMethod = "calculateDiscountFallback")
+	//@CircuitBreaker(name = "discountretry" , fallbackMethod = "calculateDiscountFallback")
+	//@RateLimiter(name="default", fallbackMethod = "calculateDiscountFallback")
+	@Bulkhead(name="default", fallbackMethod = "calculateDiscountFallback")
+	@GetMapping(path = "/product/v3/{id}")
+	public ResponseEntity<ProductDTO> getProductv3(@PathVariable Integer id) {
+		log.info("\n\n in main method");
+		Product p = productService.getProductById(id);
+		
+		if (p != null) {
+			ProductDTO pdto = productService.applyDiscountV3(p);
+			return new ResponseEntity<ProductDTO>(pdto, HttpStatus.FOUND);
+		} else {
+			return new ResponseEntity<ProductDTO>(HttpStatus.NOT_FOUND);
+		}
+	}
 	
+	public ResponseEntity<ProductDTO> calculateDiscountFallback(Integer id, Exception e) {
+
+		log.info("\n\nIn fallback");
+		Product p = productService.getProductById(id);
+
+		if (p != null) {
+			ProductDTO pdto = productService.ceateProductResponseDTO(
+					new DiscountResponse(p.getCategory(), p.getMrp(), p.getMrp(), 0.0, 0.0), p);
+			return new ResponseEntity<ProductDTO>(pdto, HttpStatus.FOUND);
+		} else {
+			return new ResponseEntity<ProductDTO>(HttpStatus.NOT_FOUND);
+		}
+
+	}
+	`
