@@ -12,8 +12,8 @@ Create Eureka Server
 	eureka.client.register-with-eureka=false
 	eureka.client.fetch-registry=false
   
-## make other projects clients to Eureka SErver
-1) Add "Eureka Discovery client" to Productms and discount ms
+## Make other projects clients to Eureka SErver
+1) Add dependancy "Eureka Discovery client" to Productms and discount ms
 2) uncomment Following properties
 
 	spring.application.name=
