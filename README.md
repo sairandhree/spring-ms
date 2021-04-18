@@ -67,7 +67,7 @@ Create Eureka Server
 1) In productms add dependancy for Resilience4j
 2) annotate contoller methods like below.
 
-	`
+`
 	
 	//@Retry(name = "discountretry" , fallbackMethod = "calculateDiscountFallback")
 	//@CircuitBreaker(name = "discountretry" , fallbackMethod = "calculateDiscountFallback")
@@ -101,4 +101,4 @@ Create Eureka Server
 
 	}
 	
-	`
+`
