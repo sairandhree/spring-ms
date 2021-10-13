@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discountms
+spec:
+  selector:
+    matchLabels:
+      app: discountms
+  replicas: 1
+  template: # template for the pods
+    metadata:
+      labels:
+        app: discountms
+        version: latest
+    spec:
+      containers:
+      - name: discountms
+        image: sairandhree/discountms
+        env:        
+        imagePullPolicy: Always
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productms
+spec:
+  selector:
+    matchLabels:
+      app: productms
+  replicas: 1
+  template: # template for the pods
+    metadata:
+      labels:
+        app: productms
+        version: latest
+    spec:
+      containers:
+      - name: productms
+        image: sairandhree/productms
+        env:
+        imagePullPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: productms
+spec:
+  # This defines which pods are going to be represented by this Service
+  # The service becomes a network endpoint for either other services
+  # or maybe external users to connect to (eg browser)
+  selector:
+    app: productms
+  ports:
+    - name: http
+      port: 8082
+      nodePort: 30080
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: discountms
+
+spec:
+  # This defines which pods are going to be represented by this Service
+  # The service becomes a network endpoint for either other services
+  # or maybe external users to connect to (eg browser)
+  selector:
+    app: discountms
+  ports:
+    - name: http
+      port: 8000
+  type: ClusterIP
+---
