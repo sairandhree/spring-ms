@@ -6,6 +6,7 @@ public class DiscountResponse {
 	private double drp;
 	private double fixedCategoryDiscount;
 	private double onSpotDiscount;
+	private String msg;
 
 	public DiscountResponse() {
 		super();
@@ -29,7 +30,9 @@ public class DiscountResponse {
 	public double getMrp() {
 		return mrp;
 	}
-
+public String getMsg() {
+		return "test message";
+	}
 	public void setMrp(double mrp) {
 		this.mrp = mrp;
 	}
